@@ -112,6 +112,7 @@ private:
   int m_angle_compensate_multiple;
   std::string scan_mode_;
   bool auto_standby_;
+  int auto_standby_static_subscribers_;
   /* Publisher */
   LaserScanPub m_publisher;
   /* Services */

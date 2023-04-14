@@ -54,6 +54,7 @@ rplidar_node::rplidar_node(const rclcpp::NodeOptions & options)
   scan_mode_ = this->declare_parameter("scan_mode", std::string());
   topic_name_ = this->declare_parameter("topic_name", std::string("scan"));
   auto_standby_ = this->declare_parameter("auto_standby", false);
+  auto_standby_static_subscribers_ = this->declare_parameter("auto_standby_static_subscribers", 0);
 
   RCLCPP_INFO(
     this->get_logger(),
@@ -332,9 +333,9 @@ void rplidar_node::publish_loop()
   auto nodes = std::make_unique<rplidar_response_measurement_node_hq_t[]>(count);
 
   if (auto_standby_) {
-    if (m_publisher->get_subscription_count() > 0 && !m_running) {
+    if (m_publisher->get_subscription_count() > auto_standby_static_subscribers_ && !m_running) {
       this->start();
-    } else if (m_publisher->get_subscription_count() == 0) {
+    } else if (m_publisher->get_subscription_count() <= auto_standby_static_subscribers_) {
       if (m_running) {
         this->stop();
       }
